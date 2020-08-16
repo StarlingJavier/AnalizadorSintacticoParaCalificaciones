@@ -1,0 +1,38 @@
+package codigo;
+
+import java_cup.runtime.Symbol;
+
+parser code
+{:
+    private Symbol s;
+    
+    public void syntax_error(Symbol s){
+        this.s = s;
+    }
+
+    public Symbol getS(){
+        return this.s;
+}
+:};
+
+
+terminal Tabulacion, Literal, Salto, ERROR;
+terminal String Nota;
+non terminal INICIO, SENTENCIA, LISTA_SENTENCIA;
+
+start with INICIO;
+
+INICIO ::= LISTA_SENTENCIA
+;
+LISTA_SENTENCIA ::= SENTENCIA |
+					SENTENCIA Salto SENTENCIA |
+					SENTENCIA Salto SENTENCIA Salto SENTENCIA |
+					SENTENCIA Salto SENTENCIA Salto SENTENCIA Salto SENTENCIA |
+					SENTENCIA Salto SENTENCIA Salto SENTENCIA Salto SENTENCIA Salto SENTENCIA
+;
+SENTENCIA ::= Nota:cal Tabulacion Literal {: 
+		if ( (Float.parseFloat(cal) < new Float(0)) && (Float.parseFloat(cal) > new Float(100)) ) {
+			parser.report_error("Numero no valido (mayor a 100 o menor a 0)", null);
+		}
+:}
+;
